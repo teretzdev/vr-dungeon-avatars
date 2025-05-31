@@ -8,7 +8,7 @@ using UnityEngine.XR.Interaction.Toolkit;
 public class XRInteractionManager : MonoBehaviour
 {
     public XRInteractionManager xrManager;
-    public XRRayInteractor heroRayInteractor;
+    public UnityEngine.XR.Interaction.Toolkit.Interactors.XRRayInteractor heroRayInteractor;
 
     private void Start()
     {

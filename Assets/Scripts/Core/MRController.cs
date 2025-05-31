@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.Management;
 using UnityEngine.XR.Interaction.Toolkit;
+using Unity.XR.CoreUtils;
 
 /// <summary>
 /// Manages mixed reality features and passthrough integration.
@@ -73,7 +74,14 @@ public class MRController : MonoBehaviour
         // Place anchor at real world position for dungeon placement
         if (anchorManager != null)
         {
-            ARAnchor anchor = anchorManager.AddAnchor(new Pose(realWorldPosition, Quaternion.identity));
+            // Create a new GameObject at the desired position
+            GameObject anchorObject = new GameObject("MR Anchor");
+            anchorObject.transform.position = realWorldPosition;
+            anchorObject.transform.rotation = Quaternion.identity;
+
+            // Add ARAnchor component
+            ARAnchor anchor = anchorObject.AddComponent<ARAnchor>();
+
             if (anchor != null)
             {
                 // Notify dungeon system to use this anchor
