@@ -23,6 +23,9 @@ Welcome to the VR Dungeon Game project! This guide will help you get started as 
 4. **Test features in Play mode and iterate**
 5. **Document changes and update design docs as needed**
 
+## Main Scene Setup
+- For a detailed, step-by-step guide to setting up the Main scene (including every GameObject, component, and setting), see **UnityEditorSetupGuide.md** in the DesignDocs folder.
+
 ## Where to Find Documentation
 - **FeatureStatus.md** — Project status and remaining work
 - **MVP_Interactables.md** — List of interactables for MVP
