@@ -5,9 +5,9 @@ using System.Collections.Generic;
 /// Orchestrates combat using Emerald AI 2024 systems.
 /// Manages turn-based/real-time combat and coordinates AI agents.
 /// </summary>
-public class EmeraldCombatManager : MonoBehaviour
+public class DungeonCombatManager : MonoBehaviour
 {
-    public static EmeraldCombatManager Instance { get; private set; }
+    public static DungeonCombatManager Instance { get; private set; }
 
     public List<MonoBehaviour> enemyAIs = new List<MonoBehaviour>(); // Replace with actual Emerald AI type
     public MonoBehaviour heroAI; // Replace with actual Emerald AI type
