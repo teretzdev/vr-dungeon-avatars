@@ -10,6 +10,7 @@ public class EmeraldItemSystem : MonoBehaviour
     public static EmeraldItemSystem Instance { get; private set; }
 
     private List<string> inventory = new List<string>();
+    private int currentGold = 0;
 
     private void Awake()
     {
@@ -49,6 +50,42 @@ public class EmeraldItemSystem : MonoBehaviour
             AddItem(item);
         Debug.Log("Loot distributed.");
     }
+
+    public void AddGold(int amount)
+    {
+        if (amount > 0)
+        {
+            currentGold += amount;
+            Debug.Log($"Gold added: {amount}. Total gold: {currentGold}");
+            
+            // Update UI if available
+            if (VRIFUIManager.Instance != null)
+            {
+                VRIFUIManager.Instance.UpdateGoldDisplay(currentGold);
+            }
+        }
+    }
+
+    public void SpendGold(int amount)
+    {
+        if (amount > 0 && currentGold >= amount)
+        {
+            currentGold -= amount;
+            Debug.Log($"Gold spent: {amount}. Remaining gold: {currentGold}");
+            
+            // Update UI if available
+            if (VRIFUIManager.Instance != null)
+            {
+                VRIFUIManager.Instance.UpdateGoldDisplay(currentGold);
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"Insufficient gold. Current: {currentGold}, Required: {amount}");
+        }
+    }
+
+    public int GetGold() => currentGold;
 
     public string[] GetInventory() => inventory.ToArray();
 } 

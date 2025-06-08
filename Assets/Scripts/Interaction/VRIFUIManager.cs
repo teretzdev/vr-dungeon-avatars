@@ -13,6 +13,7 @@ public class VRIFUIManager : MonoBehaviour
     public TextMeshProUGUI healthText;
     public TextMeshProUGUI inventoryText;
     public TextMeshProUGUI commandFeedbackText;
+    public TextMeshProUGUI goldText;
 
     private void Awake()
     {
@@ -34,6 +35,12 @@ public class VRIFUIManager : MonoBehaviour
     {
         if (inventoryText != null)
             inventoryText.text = "Inventory:\n" + string.Join(", ", items);
+    }
+
+    public void UpdateGoldDisplay(int gold)
+    {
+        if (goldText != null)
+            goldText.text = $"Gold: {gold}";
     }
 
     public void ShowCommandFeedback(string feedback)
