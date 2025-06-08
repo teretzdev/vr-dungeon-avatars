@@ -20,6 +20,10 @@ public class MRController : MonoBehaviour
     public ARAnchorManager anchorManager;
     public XROrigin xrOrigin;
 
+    [Header("Calibration")]
+    private ARAnchor currentAnchor;
+    private Bounds currentRoomBounds = new Bounds(Vector3.zero, Vector3.one * 5f);
+
     public delegate void MRModeChanged(MRMode newMode);
     public static event MRModeChanged OnMRModeChanged;
 
@@ -37,6 +41,9 @@ public class MRController : MonoBehaviour
     {
         // Default to VR mode
         SetMode(MRMode.VR);
+        
+        // Try to load calibration data
+        LoadCalibration();
     }
 
     public void SetMode(MRMode mode)
@@ -74,19 +81,75 @@ public class MRController : MonoBehaviour
         // Place anchor at real world position for dungeon placement
         if (anchorManager != null)
         {
+            // Remove existing anchor if any
+            if (currentAnchor != null)
+            {
+                Destroy(currentAnchor.gameObject);
+            }
+
             // Create a new GameObject at the desired position
             GameObject anchorObject = new GameObject("MR Anchor");
             anchorObject.transform.position = realWorldPosition;
             anchorObject.transform.rotation = Quaternion.identity;
 
             // Add ARAnchor component
-            ARAnchor anchor = anchorObject.AddComponent<ARAnchor>();
+            currentAnchor = anchorObject.AddComponent<ARAnchor>();
 
-            if (anchor != null)
+            if (currentAnchor != null)
             {
                 // Notify dungeon system to use this anchor
                 Debug.Log("MR Calibrated: Anchor placed at " + realWorldPosition);
+                
+                // Save calibration
+                SaveSystem.Instance?.SaveCalibrationData();
             }
         }
     }
+
+    public void SetRoomBounds(Bounds bounds)
+    {
+        currentRoomBounds = bounds;
+        Debug.Log($"[MRController] Room bounds set: {bounds.size}");
+    }
+
+    #region Calibration Data Methods
+    public Vector3 GetAnchorPosition()
+    {
+        return currentAnchor != null ? currentAnchor.transform.position : Vector3.zero;
+    }
+
+    public Quaternion GetAnchorRotation()
+    {
+        return currentAnchor != null ? currentAnchor.transform.rotation : Quaternion.identity;
+    }
+
+    public Bounds GetRoomBounds()
+    {
+        return currentRoomBounds;
+    }
+
+    public bool IsCalibrated()
+    {
+        return currentAnchor != null;
+    }
+
+    private void LoadCalibration()
+    {
+        if (SaveSystem.Instance == null) return;
+        
+        var calibData = SaveSystem.Instance.LoadCalibrationData();
+        if (calibData != null && calibData.isCalibrated)
+        {
+            // Restore calibration
+            CalibrateMR(calibData.anchorPosition);
+            if (currentAnchor != null)
+            {
+                currentAnchor.transform.rotation = calibData.anchorRotation;
+            }
+            currentRoomBounds = calibData.roomBounds;
+            
+            Debug.Log("[MRController] Calibration restored from save");
+        }
+    }
+    #endregion
 } 
